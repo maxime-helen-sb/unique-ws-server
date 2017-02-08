@@ -1,0 +1,19 @@
+{
+  "name": "unique-ws-server",
+  "version": "1.0.0",
+  "description": "Test repository for checking if ws creates a unique server instance",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test"
+  },
+  "keywords": [
+    "WS",
+    "TEST"
+  ],
+  "author": "maxime-helen-sb",
+  "license": "MIT",
+  "dependencies": {
+    "event-emitter": "^0.3.4",
+    "ws": "^2.0.3"
+  }
+}
