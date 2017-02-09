@@ -5,13 +5,14 @@ const ws_server = require("../websocket_server");
 const http = require("http");
 const assert = require("assert");
 
+var http_server, http_server_bis;
 var server, server_bis;
 var client, client_bis;
 
 describe("Unique ws server", () => {
 
     beforeEach("Create first ws server", done => {
-        const http_server = http.createServer(function(request, response) {
+        http_server = http.createServer(function(request, response) {
             response.writeHead(200);
             response.end();
         });
@@ -22,12 +23,12 @@ describe("Unique ws server", () => {
     });
 
     beforeEach("Create second ws server", done => {
-        const http_server = http.createServer(function(request, response) {
+        http_server_bis = http.createServer(function(request, response) {
             response.writeHead(200);
             response.end();
         });
-        http_server.listen(9221, () => {
-            server_bis = ws_server(http_server);
+        http_server_bis.listen(9221, () => {
+            server_bis = ws_server(http_server_bis);
             done();
         });
     });
@@ -47,18 +48,6 @@ describe("Unique ws server", () => {
         });
     });
 
-/*    afterEach("Close first wss server", done => {
-        server.close((error) => {
-            done(err);
-        });
-    });
-
-    afterEach("Close second wss server", done => {
-        server_bis.close((error) => {
-            done(err);
-        });
-    });*/
-
     afterEach("Close first ws client", done => {
         client.on("close", () => {
             done();
@@ -71,6 +60,22 @@ describe("Unique ws server", () => {
             done();
         });
         client_bis.close();
+    });
+
+    afterEach("Close first wss server", done => {
+        server.wss.close(error => {
+            http_server.close(err => {
+                done(error||err);
+            });
+        });
+    });
+
+    afterEach("Close second wss server", done => {
+        server_bis.wss.close((error) => {
+            http_server_bis.close(err => {
+                done(error||err);
+            });
+        });
     });
 
     it("Send message to one server", done => {
